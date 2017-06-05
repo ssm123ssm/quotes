@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html >
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" type="image/x-icon" href="https://production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico" />
+  <link rel="mask-icon" type="" href="https://production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111" />
+  <title>CodePen - Quote Machine</title>
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css'>
+<link rel='stylesheet prefetch' href='https://loading.io/css/loading.css'>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+
+      <style>
+      @charset "UTF-8";
+body {
+  font-family: Georgia;
+}
+
+.frame {
+  margin: 0 0 40px 0;
+}
+
+.footer {
+  color: grey;
+  margin-top: 100px;
+  border-top: 1px solid grey;
+  padding-top: 10px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.head-container {
+  text-align: center;
+  margin-top: 70px;
+}
+
+h1 {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 2px solid black;
+}
+
+.quote {
+  margin: auto;
+  width: 80%;
+  display: block;
+  border-radius: 10px;
+  background-color: white;
+  padding: 30px 30px 5px 30px;
+}
+
+p {
+  margin-top: 30px;
+  position: relative;
+}
+
+.q:before {
+  quotes: "“" " " " " " ";
+  font-family: Georgia;
+  content: open-quote;
+  font-size: 80px;
+  position: absolute;
+  display: block;
+  left: -30px;
+  top: -15px;
+  color: grey;
+}
+
+.content {
+  position: relative;
+  text-align: left;
+  text-indent: 35px;
+  font-size: 20px;
+}
+
+.title {
+  text-align: right;
+  display: block;
+}
+
+.buttons {
+  text-align: center;
+  margin: auto;
+  display: block;
+  margin-top: 40px;
+  margin-bottom: 100px;
+}
+
+.buttons-container {
+  margin-top: 20px;
+}
+
+.bg-1 {
+  -webkit-transition: background-color 0.5s ease;
+  transition: background-color 0.5s ease;
+  background-color: Cyan;
+}
+
+.bg-2 {
+  -webkit-transition: background-color 0.5s ease;
+  transition: background-color 0.5s ease;
+  background-color: #AAFF00;
+}
+
+.bg-3 {
+  -webkit-transition: background-color 0.5s ease;
+  transition: background-color 0.5s ease;
+  background-color: #2AD6A4;
+}
+
+.btn {
+  width: 80px;
+  height: 50px;
+}
+
+#tweet {
+  float: right;
+  font-size: 30px;
+  /* vertical-align: middle; */
+  /* line-height: 0; */
+  padding: 0px;
+}
+
+#next {
+  float: left;
+  font-size: 30px;
+  /* vertical-align: middle; */
+  /* line-height: 0; */
+  padding: 0px;
+}
+
+@media only screen and (max-width: 550px) {
+  #tweet {
+    float: none;
+    margin: auto;
+  }
+
+  #next {
+    float: none;
+    display: block;
+    margin: auto;
+  }
+}
+.title {
+  margin-bottom: 30px;
+}
+
+a {
+  text-decoration: none;
+  color: grey;
+}
+
+    </style>
+
+  
+  
+  
+  
+</head>
+
+<body translate="no" >
+
+  <div class="container-fluid">
+
+  <div class="frame">
+
+    <div class="row">
+      <div class="col-8 mx-auto">
+        <div class="head-container">
+          <h1 class="ld ">Random Quotes</h1>
+          <div class="quote">
+            <div class="content2"></div>
+            <div id="display" class="content blockquote">
+              <h5 class="loading">Loading quote...</h5>
+
+            </div>
+            <div class="title cite"></div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-5 buttons-container mx-auto">
+        <div class="buttons">
+
+
+          <button data-toggle="tooltip" title="Get next quote" id="next" class="btn btn-primary get next btn-grp"><i class="fa fa-step-forward"></i></button>
+
+
+          <button id="tweet" data-toggle="tooltip" title="Post this quote on Twitter" class="btn btn-primary tweet" type="button"><i class="fa fa-twitter"> </i></button>
+
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer">
+    <p>Created by <a href="#">Supun Manathunga</a></p>
+  </div>
+</div>
+  
+  <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+    <script>
+    $(document).ready(function() {
+  
+  checkSize();
+  $(window).resize(checkSize);
+  
+  $(".tweet").addClass("disabled");
+  $.ajaxSetup({ cache: false });
+  update();
+  $(".get").on("click", update);
+  $(".tweet").click(function(e){
+    e.preventDefault();
+    var uri = "https://twitter.com/intent/tweet?text=";
+    var qtP1 = qt.slice(3, -5);
+    qtP1 = $('<textarea />').html(qtP1).text();
+    var enc = qtP1 + " " + " by " + tt;
+    var enc2 =uri + encodeURI(enc);
+    if(enc.length > 140){
+      alert("This quote has more than 140 character, which is too big to tweet...");
+    }
+    else{
+     window.open(enc2,"_blank");
+    }
+    $(".tweet").addClass("disabled");
+  });
+  var cur = 9, qt, tt;
+  
+  function update() {
+
+    $(".content").removeClass("q");
+    $(".content").html("<h6>Loading quote...</h6>");
+    $(".title").html("");
+    $.getJSON(
+      "https://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1",
+      function(json) {
+        qt = json[0].content;
+        tt = json[0].title;
+        $("#display").addClass("content blockquote");
+        $(".content").html(qt);
+        $("#display").addClass("q");
+        var tit = "<p>" + "- " + tt + "</p>";
+        $(".title").html("<cite>" + tit + "</cite>");
+        $(".tweet").removeClass("disabled");
+        
+        
+        changeBg();
+    
+      }
+    );
+  }
+  function changeBg() {
+    var x = Math.floor(Math.random() * 4);
+    if (cur == x) {
+      x += 1;
+    }
+    cur = x;
+    //x=5;
+    switch (x) {
+      case 0:
+        $(document.body).removeClass();
+        break;
+      case 1:
+        $(document.body).removeClass();
+        $(document.body).addClass("bg-1");
+      
+        break;
+      case 2:
+        $(document.body).removeClass();
+        $(document.body).addClass("bg-2");
+        break;
+      case 3:
+        $(document.body).removeClass();
+        $(document.body).addClass("bg-3");
+        break;
+      case 4:
+        $(document.body).removeClass();
+        $(document.body).addClass("bg-4");
+        break;
+      case 5:
+        $(document.body).removeClass();
+        $(document.body).addClass("bg-5");
+        break;
+    }
+    $("p").removeClass();
+    $("p").addClass("animated fadeIn");
+  }
+
+  function checkSize(){
+    if($("#tweet").css("float") == "none" ){
+      $("#next").css("margin-bottom","10px");
+    }
+    
+  }
+  
+
+});
+  </script>
+
+  
+  
+
+</body>
+</html>
+ 
